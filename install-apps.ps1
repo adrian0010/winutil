@@ -24,15 +24,28 @@ USAGE:
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-# --- App install map ---
+# --- App install map (order matters) ---
 $appMap = @{
     'Google Chrome'        = 'install --silent --accept-source-agreements --accept-package-agreements --id Google.Chrome'
     'Adobe Acrobat Reader' = 'install --silent --accept-source-agreements --accept-package-agreements --id Adobe.Acrobat.Reader.64-bit'
-    'VLC Media Player'     = 'install --silent --accept-source-agreements --accept-package-agreements --id VideoLAN.VLC'
     'TeamViewer'           = 'install --silent --accept-source-agreements --accept-package-agreements --id TeamViewer.TeamViewer'
     'AnyDesk'              = 'install --silent --accept-source-agreements --accept-package-agreements --id AnyDesk.AnyDesk'
+    'WinRAR'               = 'install --silent --accept-source-agreements --accept-package-agreements --id WinRAR.WinRAR'
+    'VLC Media Player'     = 'install --silent --accept-source-agreements --accept-package-agreements --id VideoLAN.VLC'
+    'OpenOffice'           = 'install --silent --accept-source-agreements --accept-package-agreements --id TheApacheOpenOffice.OpenOffice'
     'Malwarebytes'         = 'install --silent --accept-source-agreements --accept-package-agreements --id Malwarebytes.Malwarebytes'
 }
+# Explicit ordering for GUI
+$appList = @(
+    'Google Chrome',
+    'Adobe Acrobat Reader',
+    'TeamViewer',
+    'AnyDesk',
+    'WinRAR',
+    'VLC Media Player',
+    'OpenOffice',
+    'Malwarebytes'
+)
 
 # --- Tweak actions ---
 function Remove-TempFiles {
@@ -71,9 +84,13 @@ $tabApps = New-Object System.Windows.Forms.TabPage 'Install Apps'
 $tabs.TabPages.Add($tabApps)
 
 $clbApps = New-Object System.Windows.Forms.CheckedListBox
+$clbApps.CheckOnClick = $true      # Require explicit checking, no double-click activation
+$clbApps.ItemHeight = 24           # Add spacing between items
 $clbApps.Location = [Drawing.Point]::New(10,10)
 $clbApps.Size     = [Drawing.Size]::New(410,260)
-$appMap.Keys | ForEach-Object { $clbApps.Items.Add($_) }
+foreach ($app in $appList) {
+    $clbApps.Items.Add($app)
+}
 $tabApps.Controls.Add($clbApps)
 
 $btnInstall = New-Object System.Windows.Forms.Button
@@ -84,11 +101,11 @@ $tabApps.Controls.Add($btnInstall)
 
 $btnInstall.Add_Click({
     if ($clbApps.CheckedItems.Count -eq 0) {
-        [System.Windows.Forms.MessageBox]::Show('Select at least one application to install.','No Selection',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Warning)
+        [System.Windows.Forms.MessageBox]::Show('Please check at least one application to install.','No Selection',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Warning)
         return
     }
     if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-        [System.Windows.Forms.MessageBox]::Show('winget not found. Install App Installer first.','Error',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Error)
+        [System.Windows.Forms.MessageBox]::Show('winget not found. Please install App Installer first.','Error',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Error)
         return
     }
     foreach ($app in $clbApps.CheckedItems) {
@@ -111,12 +128,12 @@ $tabTweaks.Controls.Add($chkTemp)
 $btnClean = New-Object System.Windows.Forms.Button
 $btnClean.Text     = 'Clean Temp'
 $btnClean.Size     = [Drawing.Size]::New(100,30)
-$btnClean.Location = [Drawing.Point]::New(10,50)
+$btnClean.Location = [Drawing.Point]::New(10,60)  # Increased spacing from checkbox
 $tabTweaks.Controls.Add($btnClean)
 
 $btnClean.Add_Click({
     if (-not $chkTemp.Checked) {
-        [System.Windows.Forms.MessageBox]::Show('Check "Remove Temporary Files" first.','No Selection',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Warning)
+        [System.Windows.Forms.MessageBox]::Show('Please check "Remove Temporary Files" first.','No Selection',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Warning)
         return
     }
     Remove-TempFiles
@@ -127,7 +144,7 @@ $btnClean.Add_Click({
 $chkDarkMode = New-Object System.Windows.Forms.CheckBox
 $chkDarkMode.Text = 'Dark Mode'
 $chkDarkMode.AutoSize = $true
-$chkDarkMode.Location = [Drawing.Point]::New(10,100)
+$chkDarkMode.Location = [Drawing.Point]::New(10,110)  # Increased spacing below Clean Temp
 $tabTweaks.Controls.Add($chkDarkMode)
 
 $chkDarkMode.Add_CheckedChanged({
