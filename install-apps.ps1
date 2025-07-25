@@ -21,6 +21,13 @@ USAGE:
   - Ensure winget is available for app installs.
 #>
 
+# --- Elevation Check: restart as admin if not already ---
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    $params = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    Start-Process -FilePath powershell -ArgumentList $params -Verb RunAs
+    exit
+}
+
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
