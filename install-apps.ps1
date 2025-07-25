@@ -22,9 +22,16 @@ USAGE:
 #>
 
 # --- Elevation Check: restart as admin if not already ---
+# Use remote script URL for re-launch when piped via iex
+$scriptUrl = 'https://raw.githubusercontent.com/adrian0010/winutil/refs/heads/main/install-apps.ps1'
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    $params = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
-    Start-Process -FilePath powershell -ArgumentList $params -Verb RunAs
+    # If script is a file, re-run that; otherwise use remote URL
+    if ($PSCommandPath) {
+        $args = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    } else {
+        $args = "-NoProfile -ExecutionPolicy Bypass -Command \"iex (irm '$scriptUrl')\""
+    }
+    Start-Process -FilePath powershell -ArgumentList $args -Verb RunAs
     exit
 }
 
