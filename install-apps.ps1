@@ -32,7 +32,7 @@ $appMap = @{
     'AnyDesk'              = 'install --silent --accept-source-agreements --accept-package-agreements --id AnyDesk.AnyDesk'
     'WinRAR'               = 'install --silent --accept-source-agreements --accept-package-agreements --id WinRAR.WinRAR'
     'VLC Media Player'     = 'install --silent --accept-source-agreements --accept-package-agreements --id VideoLAN.VLC'
-    'OpenOffice'           = 'install --silent --accept-source-agreements --accept-package-agreements --id TheApacheOpenOffice.OpenOffice'
+    'OpenOffice'           = 'install --silent --accept-source-agreements --accept-package-agreements --id Apache.OpenOffice'
     'Malwarebytes'         = 'install --silent --accept-source-agreements --accept-package-agreements --id Malwarebytes.Malwarebytes'
 }
 # Explicit ordering for GUI
