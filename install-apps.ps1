@@ -22,18 +22,27 @@ USAGE:
 #>
 
 # --- Elevation Check: restart as admin if not already ---
-# Use remote script URL for re-launch when piped via iex
+# Handle both local and remote invocations for elevation
 $scriptUrl = 'https://raw.githubusercontent.com/adrian0010/winutil/refs/heads/main/install-apps.ps1'
-if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    # If script is a file, re-run that; otherwise use remote URL
+$principal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     if ($PSCommandPath) {
-        $args = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+        $argList = @(
+            '-NoProfile',
+            '-ExecutionPolicy', 'Bypass',
+            '-File', $PSCommandPath
+        )
     } else {
-        $args = "-NoProfile -ExecutionPolicy Bypass -Command \"iex (irm '$scriptUrl')\""
+        $argList = @(
+            '-NoProfile',
+            '-ExecutionPolicy', 'Bypass',
+            '-Command', "iex (irm '$scriptUrl')"
+        )
     }
-    Start-Process -FilePath powershell -ArgumentList $args -Verb RunAs
+    Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -Verb RunAs
     exit
 }
+
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
