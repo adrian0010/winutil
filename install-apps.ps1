@@ -57,6 +57,7 @@ $appMap = @{
     'VLC Media Player'     = 'install --silent --accept-source-agreements --accept-package-agreements --id VideoLAN.VLC'
     'OpenOffice'           = 'install --silent --accept-source-agreements --accept-package-agreements --id Apache.OpenOffice'
     'Malwarebytes'         = 'install --silent --accept-source-agreements --accept-package-agreements --id Malwarebytes.Malwarebytes'
+    'ESET Node32'          = 'install --silent --accept-source-agreements --accept-package-agreements --id ESET.Nod32'
 }
 # Explicit ordering for GUI
 $appList = @(
@@ -67,7 +68,8 @@ $appList = @(
     'WinRAR',
     'VLC Media Player',
     'OpenOffice',
-    'Malwarebytes'
+    'Malwarebytes',
+    'Eset Node32'
 )
 
 # --- Tweak actions ---
@@ -181,4 +183,5 @@ $chkDarkMode.Add_CheckedChanged({
 })
 
 # Show the form
+
 [void] $form.ShowDialog()
