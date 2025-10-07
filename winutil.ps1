@@ -1,26 +1,4 @@
-<#
-.SYNOPSIS
-  All-in-one GUI for installing apps and performing system tweaks.
-.DESCRIPTION
-  Tab 1: Install selected applications via winget.
-  Tab 2: System Tweaks – remove temporary files and toggle Dark Mode.
-
-USAGE:
-  To run locally:
-    . .\Windows-Toolkit.ps1
-
-  To run directly from GitHub/Gist (if hosted as raw URL):
-    powershell -NoProfile -ExecutionPolicy Bypass -Command \
-      "Invoke-Expression (Invoke-RestMethod 'https://raw.githubusercontent.com/<YOUR_USER>/<YOUR_REPO>/main/Windows-Toolkit.ps1')"
-
-  Or shorter within PowerShell:
-    iex (irm 'https://raw.githubusercontent.com/<YOUR_USER>/<YOUR_REPO>/main/Windows-Toolkit.ps1')
-
-.NOTES
-  - Run PowerShell as Administrator for system tasks.
-  - Ensure winget is available for app installs.
-#>
-
+# Windows Utility Script
 # --- Elevation Check: restart as admin if not already ---
 # Handle both local and remote invocations for elevation
 $scriptUrl = 'https://raw.githubusercontent.com/adrian0010/winutil/refs/heads/main/install-apps.ps1'
@@ -57,8 +35,9 @@ $appMap = @{
     'VLC Media Player'     = 'install --silent --accept-source-agreements --accept-package-agreements --id VideoLAN.VLC'
     'OpenOffice'           = 'install --silent --accept-source-agreements --accept-package-agreements --id Apache.OpenOffice'
     'Malwarebytes'         = 'install --silent --accept-source-agreements --accept-package-agreements --id Malwarebytes.Malwarebytes'
-    'ESET Nod32'          = 'install --silent --accept-source-agreements --accept-package-agreements --id ESET.Nod32'
+    'ESET Nod32'           = 'install --silent --accept-source-agreements --accept-package-agreements --id ESET.Nod32'
 }
+
 # Explicit ordering for GUI
 $appList = @(
     'Google Chrome',
@@ -69,13 +48,13 @@ $appList = @(
     'VLC Media Player',
     'OpenOffice',
     'Malwarebytes',
-    'Eset Nod32'
+    'ESET Nod32'
 )
 
-# --- Tweak actions ---
+# --- Tweak actions and helpers (grouped with System Tweaks tab) ---
 function Remove-TempFiles {
-    Get-ChildItem -Path "C:\Windows\Temp" *.* -Recurse | Remove-Item -Force -Recurse
-    Get-ChildItem -Path $env:TEMP *.* -Recurse | Remove-Item -Force -Recurse
+    Get-ChildItem -Path "C:\Windows\Temp" *.* -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+    Get-ChildItem -Path $env:TEMP *.* -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
 }
 
 function Set-DarkMode {
@@ -169,9 +148,7 @@ $clbApps.CheckOnClick = $true      # Require explicit checking, no double-click 
 $clbApps.ItemHeight = 24           # Add spacing between items
 $clbApps.Location = [Drawing.Point]::New(10,10)
 $clbApps.Size     = [Drawing.Size]::New(580,260)
-foreach ($app in $appList) {
-    $clbApps.Items.Add($app)
-}
+$appList | ForEach-Object { $clbApps.Items.Add($_) }
 $tabApps.Controls.Add($clbApps)
 
 $btnInstall = New-Object System.Windows.Forms.Button
@@ -190,7 +167,12 @@ $btnInstall.Add_Click({
         return
     }
     foreach ($app in $clbApps.CheckedItems) {
-        Start-Process -FilePath 'winget' -ArgumentList $appMap[$app] -NoNewWindow -Wait
+        $args = $appMap[$app]
+        if ($null -eq $args) {
+            Write-Host "[WARN] No installation mapping for '$app'" -ForegroundColor Yellow
+            continue
+        }
+        Start-Process -FilePath 'winget' -ArgumentList $args -NoNewWindow -Wait
     }
     [System.Windows.Forms.MessageBox]::Show('Selected applications have been installed.','Done',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Information)
 })
