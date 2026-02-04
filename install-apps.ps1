@@ -49,15 +49,15 @@ Add-Type -AssemblyName System.Drawing
 
 # --- App install map (order matters) ---
 $appMap = @{
-    'Google Chrome'        = 'install --silent --accept-source-agreements --accept-package-agreements --id Google.Chrome'
-    'Adobe Acrobat Reader' = 'install --silent --accept-source-agreements --accept-package-agreements --id Adobe.Acrobat.Reader.64-bit'
-    'TeamViewer'           = 'install --silent --accept-source-agreements --accept-package-agreements --id TeamViewer.TeamViewer'
-    'AnyDesk'              = 'install --silent --accept-source-agreements --accept-package-agreements --id AnyDesk.AnyDesk'
-    'WinRAR'               = 'install --silent --accept-source-agreements --accept-package-agreements --id RARLab.WinRAR'
-    'VLC Media Player'     = 'install --silent --accept-source-agreements --accept-package-agreements --id VideoLAN.VLC'
-    'OpenOffice'           = 'install --silent --accept-source-agreements --accept-package-agreements --id Apache.OpenOffice'
-    'Malwarebytes'         = 'install --silent --accept-source-agreements --accept-package-agreements --id Malwarebytes.Malwarebytes'
-    'ESET Nod32'          = 'install --silent --accept-source-agreements --accept-package-agreements --id ESET.Nod32'
+    'Google Chrome'        = 'install --silent --accept-source-agreements --accept-package-agreements --id Google.Chrome --source winget'
+    'Adobe Acrobat Reader' = 'install --silent --accept-source-agreements --accept-package-agreements --id Adobe.Acrobat.Reader.64-bit --source winget'
+    'TeamViewer'           = 'install --silent --accept-source-agreements --accept-package-agreements --id TeamViewer.TeamViewer --source winget'
+    'AnyDesk'              = 'install --silent --accept-source-agreements --accept-package-agreements --id AnyDesk.AnyDesk --source winget'
+    'WinRAR'               = 'install --silent --accept-source-agreements --accept-package-agreements --id RARLab.WinRAR --source winget'
+    'VLC Media Player'     = 'install --silent --accept-source-agreements --accept-package-agreements --id VideoLAN.VLC --source winget'
+    'OpenOffice'           = 'install --silent --accept-source-agreements --accept-package-agreements --id Apache.OpenOffice --source winget'
+    'Malwarebytes'         = 'install --silent --accept-source-agreements --accept-package-agreements --id Malwarebytes.Malwarebytes --source winget'
+    'ESET Nod32'          = 'install --silent --accept-source-agreements --accept-package-agreements --id ESET.Nod32 --source winget'
 }
 # Explicit ordering for GUI
 $appList = @(
@@ -185,4 +185,5 @@ $chkDarkMode.Add_CheckedChanged({
 # Show the form
 
 [void] $form.ShowDialog()
+
 
