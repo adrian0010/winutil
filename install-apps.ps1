@@ -50,7 +50,7 @@ Add-Type -AssemblyName System.Drawing
 # --- App install map (order matters) ---
 $appMap = @{
     'Google Chrome'        = 'install --silent --accept-source-agreements --accept-package-agreements --id Google.Chrome --source winget'
-    'Brave'                = 'winget install -e --id Brave.Brave'
+    'Brave'                = 'install -e --id Brave.Brave'
     'Adobe Acrobat Reader' = 'install --silent --accept-source-agreements --accept-package-agreements --id Adobe.Acrobat.Reader.64-bit --source winget'
     'TeamViewer'           = 'install --silent --accept-source-agreements --accept-package-agreements --id TeamViewer.TeamViewer --source winget'
     'AnyDesk'              = 'install --silent --accept-source-agreements --accept-package-agreements --id AnyDesk.AnyDesk --source winget'
