@@ -63,6 +63,7 @@ $appMap = @{
 # Explicit ordering for GUI
 $appList = @(
     'Google Chrome',
+    'Brave',
     'Adobe Acrobat Reader',
     'TeamViewer',
     'AnyDesk',
